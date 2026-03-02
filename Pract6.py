@@ -15,25 +15,32 @@ print("\nSemantic Similarity Score:", similarity[0][0])
 
 """
 
-# Improved Semantic Similarity using Embeddings + POS awareness
+# Semantic Similarity with User Input
+# Embedding-based + lightweight POS adjustment
+
+import os
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"  # hide TF warnings
 
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import spacy
 
 # Load lightweight models
-model = SentenceTransformer('all-MiniLM-L6-v2')
+model = SentenceTransformer("all-MiniLM-L6-v2")
 nlp = spacy.load("en_core_web_sm")
 
-sentence1 = "I want a book."
-sentence2 = "I want to book."
+# -------- USER INPUT --------
+sentence1 = input("Enter first sentence: ")
+sentence2 = input("Enter second sentence: ")
 
-# ---- Embedding Similarity ----
-emb1 = model.encode([sentence1])
-emb2 = model.encode([sentence2])
-semantic_score = cosine_similarity(emb1, emb2)[0][0]
+# -------- EMBEDDING SIMILARITY --------
+embeddings = model.encode([sentence1, sentence2])
+semantic_score = cosine_similarity(
+    [embeddings[0]],
+    [embeddings[1]]
+)[0][0]
 
-# ---- POS-aware penalty ----
+# -------- POS-BASED PENALTY (fix for noun/verb issue) --------
 doc1 = nlp(sentence1)
 doc2 = nlp(sentence2)
 
@@ -45,11 +52,12 @@ penalty = 0
 for word in pos_dict1:
     if word in pos_dict2:
         if pos_dict1[word] != pos_dict2[word]:
-            penalty += 0.2   # reduce similarity if same word has different role
+            penalty += 0.2   # reduce score if same word has different role
 
-final_score = semantic_score - penalty
-final_score = max(0, final_score)
+# Final adjusted similarity
+final_score = max(0, semantic_score - penalty)
 
-print("Semantic Score:", semantic_score)
-print("Penalty:", penalty)
-print("Final Similarity:", final_score)
+# -------- OUTPUT --------
+print("\nSemantic Score :", round(semantic_score, 3))
+print("Penalty Applied:", penalty)
+print("Final Similarity:", round(final_score, 3))
