@@ -14,7 +14,7 @@ similarity = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])
 print("\nSemantic Similarity Score:", similarity[0][0])
 
 """
-
+"""
 # Semantic Similarity with User Input
 # Embedding-based + lightweight POS adjustment
 
@@ -60,4 +60,4 @@ final_score = max(0, semantic_score - penalty)
 # -------- OUTPUT --------
 print("\nSemantic Score :", round(semantic_score, 3))
 print("Penalty Applied:", penalty)
-print("Final Similarity:", round(final_score, 3))
+print("Final Similarity:", round(final_score, 3))"""
