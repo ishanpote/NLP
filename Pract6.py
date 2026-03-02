@@ -33,20 +33,23 @@ emb1 = model.encode([sentence1])
 emb2 = model.encode([sentence2])
 semantic_score = cosine_similarity(emb1, emb2)[0][0]
 
-# ---- POS Pattern Comparison ----
+# ---- POS-aware penalty ----
 doc1 = nlp(sentence1)
 doc2 = nlp(sentence2)
 
-pos1 = [token.pos_ for token in doc1]
-pos2 = [token.pos_ for token in doc2]
+pos_dict1 = {token.text.lower(): token.pos_ for token in doc1}
+pos_dict2 = {token.text.lower(): token.pos_ for token in doc2}
 
-# simple POS similarity
-pos_match = sum(p1 == p2 for p1, p2 in zip(pos1, pos2))
-pos_score = pos_match / max(len(pos1), len(pos2))
+penalty = 0
 
-# ---- Final Combined Score ----
-final_score = (0.7 * semantic_score) + (0.3 * pos_score)
+for word in pos_dict1:
+    if word in pos_dict2:
+        if pos_dict1[word] != pos_dict2[word]:
+            penalty += 0.2   # reduce similarity if same word has different role
+
+final_score = semantic_score - penalty
+final_score = max(0, final_score)
 
 print("Semantic Score:", semantic_score)
-print("POS Score:", pos_score)
-print("Final Adjusted Similarity:", final_score)
+print("Penalty:", penalty)
+print("Final Similarity:", final_score)
