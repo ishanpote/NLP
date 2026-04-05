@@ -1,3 +1,5 @@
+# GROUP 1 - Analyze semantic similarity between sentences using a semantic model or embeddings.
+
 # Semantic Similarity using Embeddings (User Input + Lightweight)
 
 import os
