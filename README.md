@@ -1,5 +1,4 @@
 LIST OF EXPERIMENTS (As per GROUP’s)
-(Based on the topics you provided)
 
 1. 	Demonstrate the Basics of Text Processing
 GROUP 3 - Convert a given text to lowercase and remove punctuation.
